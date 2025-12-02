@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: demo-auth-db-secret
+stringData:
+  DB_PASSWORD: "1qaz2wsx"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-auth-config
+data:
+  DB_HOST: "192.168.1.18"
+  DB_PORT: "5432"
+  DB_NAME: "appdb"
+  DB_USER: "k8suser"
+  FLASK_SECRET_KEY: "change-this-secret"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-auth
+  template:
+    metadata:
+      labels:
+        app: demo-auth
+    spec:
+      containers:
+        - name: demo-auth
+          image: your-registry/demo-auth:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: demo-auth-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: demo-auth-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: demo-auth-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: demo-auth-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: demo-auth-db-secret
+                  key: DB_PASSWORD
+            - name: FLASK_SECRET_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: demo-auth-config
+                  key: FLASK_SECRET_KEY
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-auth
+spec:
+  type: ClusterIP
+  selector:
+    app: demo-auth
+  ports:
+    - port: 80
+      targetPort: 5000
+      protocol: TCP
+      name: http

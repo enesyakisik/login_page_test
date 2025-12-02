@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title">Hello, {{ user.email }}!</h2>
+        <p class="card-text">You registered on {{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}.</p>
+        <p class="card-text">This is a simple demo dashboard for authenticated users.</p>
+        <a class="btn btn-outline-primary" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
