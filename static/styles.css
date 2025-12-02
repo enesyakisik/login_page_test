@@ -1,0 +1,11 @@
+body {
+  background: #f7f9fb;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+}
+
+.container {
+  max-width: 960px;
+}
