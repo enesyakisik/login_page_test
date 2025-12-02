@@ -38,15 +38,7 @@ The app will create a `users` table on first request if it does not exist.
 ## Docker
 Build and run the image locally:
 ```bash
-docker build -t demo-auth:latest .
-docker run -p 5000:5000 \
-  -e DB_HOST=192.168.1.18 \
-  -e DB_PORT=5432 \
-  -e DB_NAME=appdb \
-  -e DB_USER=k8suser \
-  -e DB_PASSWORD=1qaz2wsx \
-  -e FLASK_SECRET_KEY=change-this-secret \
-  demo-auth:latest
+
 ```
 
 ## Kubernetes
