@@ -21,7 +21,7 @@ kind: Deployment
 metadata:
   name: demo-auth
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       app: demo-auth
